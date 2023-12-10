@@ -1979,7 +1979,8 @@ FMT_BEGIN_NAMESPACE
 template <>
 struct formatter<adl_test::fmt::detail::foo> : formatter<std::string> {
   auto format(adl_test::fmt::detail::foo, format_context& ctx)
-      -> decltype(ctx.out()) {
+
+    -> decltype(ctx.out()) {
     return formatter<std::string>::format("foo", ctx);
   }
 };
