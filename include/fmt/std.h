@@ -184,8 +184,8 @@ struct formatter<std::bitset<N>, Char> : nested_formatter<string_view> {
 
  public:
   template <typename FormatContext>
-  auto format(const std::bitset<N>& bs, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::bitset<N>& bs,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     return write_padded(ctx, writer{bs});
   }
 };
@@ -225,8 +225,8 @@ struct formatter<std::optional<T>, Char,
   }
 
   template <typename FormatContext>
-  auto format(const std::optional<T>& opt, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::optional<T>& opt,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     if (!opt) return detail::write<Char>(ctx.out(), none);
 
     auto out = ctx.out();
@@ -271,8 +271,8 @@ struct formatter<std::expected<T, E>, Char,
   }
 
   template <typename FormatContext>
-  auto format(const std::expected<T, E>& value, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::expected<T, E>& value,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     auto out = ctx.out();
 
     if (value.has_value()) {
@@ -298,8 +298,8 @@ template <> struct formatter<std::source_location> {
   }
 
   template <typename FormatContext>
-  auto format(const std::source_location& loc, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::source_location& loc,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     auto out = ctx.out();
     out = detail::write(out, loc.file_name());
     out = detail::write(out, ':');
@@ -357,8 +357,8 @@ template <typename Char> struct formatter<std::monostate, Char> {
   }
 
   template <typename FormatContext>
-  auto format(const std::monostate&, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::monostate&,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     return detail::write<Char>(ctx.out(), "monostate");
   }
 };
@@ -375,8 +375,8 @@ struct formatter<
   }
 
   template <typename FormatContext>
-  auto format(const Variant& value, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const Variant& value,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     auto out = ctx.out();
 
     out = detail::write<Char>(out, "variant(");
@@ -406,8 +406,8 @@ template <typename Char> struct formatter<std::error_code, Char> {
   }
 
   template <typename FormatContext>
-  FMT_CONSTEXPR auto format(const std::error_code& ec, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  FMT_CONSTEXPR auto format(const std::error_code& ec,
+                            FormatContext& ctx) const -> decltype(ctx.out()) {
     auto out = ctx.out();
     out = detail::write_bytes<Char>(out, ec.category().name(), format_specs());
     out = detail::write<Char>(out, Char(':'));
@@ -498,8 +498,8 @@ struct formatter<std::type_info, Char  // DEPRECATED! Mixing code unit types.
   }
 
   template <typename Context>
-  auto format(const std::type_info& ti, Context& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::type_info& ti,
+              Context& ctx) const -> decltype(ctx.out()) {
     return detail::write_demangled_name<Char>(ctx.out(), ti);
   }
 };
@@ -527,8 +527,8 @@ struct formatter<
   }
 
   template <typename Context>
-  auto format(const std::exception& ex, Context& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::exception& ex,
+              Context& ctx) const -> decltype(ctx.out()) {
     auto out = ctx.out();
 #if FMT_USE_RTTI
     if (with_typename_) {
@@ -578,8 +578,8 @@ struct formatter<BitRef, Char,
                  enable_if_t<detail::is_bit_reference_like<BitRef>::value>>
     : formatter<bool, Char> {
   template <typename FormatContext>
-  FMT_CONSTEXPR auto format(const BitRef& v, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  FMT_CONSTEXPR auto format(const BitRef& v,
+                            FormatContext& ctx) const -> decltype(ctx.out()) {
     return formatter<bool, Char>::format(v, ctx);
   }
 };
@@ -598,8 +598,8 @@ struct formatter<std::atomic<T>, Char,
                  enable_if_t<is_formattable<T, Char>::value>>
     : formatter<T, Char> {
   template <typename FormatContext>
-  auto format(const std::atomic<T>& v, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::atomic<T>& v,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     return formatter<T, Char>::format(v.load(), ctx);
   }
 };
@@ -609,8 +609,8 @@ FMT_EXPORT
 template <typename Char>
 struct formatter<std::atomic_flag, Char> : formatter<bool, Char> {
   template <typename FormatContext>
-  auto format(const std::atomic_flag& v, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::atomic_flag& v,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     return formatter<bool, Char>::format(v.test(), ctx);
   }
 };
@@ -641,8 +641,8 @@ struct formatter<std::complex<F>, Char> : nested_formatter<F, Char> {
 
  public:
   template <typename FormatContext>
-  auto format(const std::complex<F>& c, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const std::complex<F>& c,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     return this->write_padded(ctx, writer{this, c});
   }
 };

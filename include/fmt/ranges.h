@@ -171,11 +171,12 @@ template <typename T, typename C> class is_tuple_formattable_<T, C, true> {
   static auto all_true(...) -> std::false_type;
 
   template <size_t... Is>
-  static auto check(index_sequence<Is...>) -> decltype(all_true(
-      index_sequence<Is...>{},
-      integer_sequence<bool,
-                       (is_formattable<typename std::tuple_element<Is, T>::type,
-                                       C>::value)...>{}));
+  static auto check(index_sequence<Is...>)
+      -> decltype(all_true(
+          index_sequence<Is...>{},
+          integer_sequence<
+              bool, (is_formattable<typename std::tuple_element<Is, T>::type,
+                                    C>::value)...>{}));
 
  public:
   static constexpr const bool value =
@@ -335,8 +336,8 @@ struct formatter<Tuple, Char,
   }
 
   template <typename FormatContext>
-  auto format(const Tuple& value, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(const Tuple& value,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     ctx.advance_to(detail::copy<Char>(opening_bracket_, ctx.out()));
     detail::for_each2(
         formatters_, value,
@@ -544,8 +545,8 @@ struct formatter<
   }
 
   template <typename FormatContext>
-  auto format(range_type& range, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(range_type& range,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     return range_formatter_.format(range, ctx);
   }
 };
@@ -641,8 +642,8 @@ struct formatter<join_view<It, Sentinel, Char>, Char> {
   }
 
   template <typename FormatContext>
-  auto format(view_ref& value, FormatContext& ctx) const
-      -> decltype(ctx.out()) {
+  auto format(view_ref& value,
+              FormatContext& ctx) const -> decltype(ctx.out()) {
     auto it = std::forward<view_ref>(value).begin;
     auto out = ctx.out();
     if (it == value.end) return out;
@@ -684,9 +685,9 @@ auto join(It begin, Sentinel end, string_view sep) -> join_view<It, Sentinel> {
   \endrst
  */
 template <typename Range>
-auto join(Range&& r, string_view sep)
-    -> join_view<decltype(detail::range_begin(r)),
-                 decltype(detail::range_end(r))> {
+auto join(Range&& r,
+          string_view sep) -> join_view<decltype(detail::range_begin(r)),
+                                        decltype(detail::range_end(r))> {
   return {detail::range_begin(r), detail::range_end(r), sep};
 }
 
@@ -817,8 +818,8 @@ FMT_BEGIN_EXPORT
   \endrst
  */
 template <typename... T>
-FMT_CONSTEXPR auto join(const std::tuple<T...>& tuple, string_view sep)
-    -> tuple_join_view<char, T...> {
+FMT_CONSTEXPR auto join(const std::tuple<T...>& tuple,
+                        string_view sep) -> tuple_join_view<char, T...> {
   return {tuple, sep};
 }
 
@@ -834,8 +835,8 @@ FMT_CONSTEXPR auto join(const std::tuple<T...>& tuple, string_view sep)
   \endrst
  */
 template <typename T>
-auto join(std::initializer_list<T> list, string_view sep)
-    -> join_view<const T*, const T*> {
+auto join(std::initializer_list<T> list,
+          string_view sep) -> join_view<const T*, const T*> {
   return join(std::begin(list), std::end(list), sep);
 }
 
